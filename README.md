@@ -1,29 +1,47 @@
 # OmniAuditor
 
-**An evidence-first, extensible audit and assurance hub for software projects.**
+**Evidence-first, extensible software auditing and assurance.**
 
-> Status: early foundation. No scanners, AI agents, or certification workflows are operational yet.
+OmniAuditor is a planned AI-assisted audit hub for software repositories, technical controls, quality, operational risk, and compliance readiness. A project can contain many repositories; each assessment should trace its conclusions to explicit evidence and versioned standards.
 
-OmniAuditor will connect multiple repositories, specialized audit agents, security scanners, and compliance frameworks into one traceable assessment workflow.
+> **Foundation status (Phase 0):** an offline, read-only JSON importer for SARIF and Trivy results, a normalized findings contract, and technical Markdown/JSON output. No external scanner, agent, dashboard, MCP server, GRC sync, or ISO certification capability is implemented yet.
 
-## Principles
+## Quick start (offline imported reports only)
 
-- One project can contain multiple repositories and services.
-- Each finding must identify its source, evidence, affected location, impact, and suggested remediation.
-- Technical findings are **not automatically ISO nonconformities**; framework mapping requires review.
-- Unknown, not tested, and insufficient evidence are first-class outcomes—not a pass.
-- Integrations run with explicit permission and least privilege; active penetration tests require separate authorization.
-- Reports are reproducible and must identify tool and standard versions.
-- AI provides recommendations, never fabricates evidence or issues certificates.
+Node.js 20+ is required; no installation is necessary for the current CLI.
 
-## Scope
+```bash
+node apps/cli/index.mjs ingest \
+  --project shahr-man \
+  --repo carpet-core \
+  --format sarif \
+  --file examples/sample.sarif.json \
+  --out ./out
+```
 
-Architecture and first adapter contracts are being developed separately from the production application. No external source repository is copied or vendored.
+You may repeat `--format FORMAT --file PATH` pairs for additional reports from the **same repository**. Run again for a different repository. No network, scanning, build, test, or deployment is triggered by `ingest`.
 
-## Status
+Outputs: `out/audit-run.json` and `out/audit-report.md`. These are *technical findings*, not an ISO conformity determination. Input files must be trusted scanner artifacts; the importer never executes their content.
 
-This initial README only establishes the repository. See the forthcoming foundation pull request for the first implementation.
+## What comes next
 
-## License
+- Multi-project / multi-repository inventory, relationships, versioned snapshots and jobs.
+- Sandboxed tool adapters: Trivy, Opengrep, Shannon, Strix, OWASP AppSec Agent, MRA Auditor, SecuritySkills.
+- Optional external systems: DefectDojo, CISO Assistant, Unicis.
+- Versioned framework catalog, control-by-control assessment, evidence ledger, reviewer approval.
+- AI Chief Auditor, read-only-by-default MCP, dashboard, continuous re-assessment.
 
-License selection is pending; the repository being public does not grant redistribution rights.
+See [architecture](docs/ARCHITECTURE.md), [roadmap](docs/ROADMAP.md), [finding lifecycle](docs/FINDINGS.md), [security boundaries](docs/SECURITY.md), [integration registry](integrations/registry.json) and [standards catalog](standards/frameworks.json).
+
+## Non-negotiable rules
+
+1. Findings must identify scope, source, and evidence. No invented source lines, results, or control mappings.
+2. `not-assessed`, `insufficient-evidence`, and `not-applicable` are different from `conforms`.
+3. A technical scanner alert does **not** automatically prove an ISO management-system nonconformity.
+4. Active tests, write actions, repository access, and data export require appropriate explicit authorization.
+5. AI and scanners can support audit readiness, but cannot grant accredited ISO certificates.
+6. Avoid exposing secrets, personal data, or customer/production records in exported findings.
+
+**Development policy:** never run build, tests, migrations, infrastructure changes or deployments implicitly. No CI automation is configured in this foundation.
+
+**License:** not chosen yet; public source code is not automatically licensed for reuse.

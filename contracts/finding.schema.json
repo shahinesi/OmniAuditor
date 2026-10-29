@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shahinesi/OmniAuditor/blob/main/contracts/finding.schema.json",
+  "title": "OmniAuditor imported technical finding 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "fingerprint",
+    "projectId",
+    "repositoryId",
+    "revision",
+    "title",
+    "description",
+    "severity",
+    "confidence",
+    "status",
+    "locations",
+    "sources",
+    "evidence",
+    "remediation",
+    "controlMappings"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^F-[a-f0-9]{16}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repositoryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "informational"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "unverified",
+        "low",
+        "medium",
+        "high",
+        "confirmed"
+      ]
+    },
+    "status": {
+      "enum": [
+        "needs-review",
+        "confirmed",
+        "false-positive",
+        "accepted-risk",
+        "resolved"
+      ]
+    },
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file",
+          "line",
+          "component"
+        ],
+        "properties": {
+          "file": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "component": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tool",
+          "format",
+          "ruleId"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "ruleId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "artifactName",
+          "sha256",
+          "reference"
+        ],
+        "properties": {
+          "kind": {
+            "const": "scanner-artifact"
+          },
+          "artifactName": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "reference": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "remediation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "controlMappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "frameworkId",
+          "edition",
+          "controlId",
+          "mappingStatus"
+        ],
+        "properties": {
+          "frameworkId": {
+            "type": "string"
+          },
+          "edition": {
+            "type": "string"
+          },
+          "controlId": {
+            "type": "string"
+          },
+          "mappingStatus": {
+            "enum": [
+              "candidate",
+              "reviewed"
+            ]
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
