@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>OmniAuditor — Audit & Assurance Workspace</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-icon">◈</span><span><strong>OmniAuditor</strong><small>Audit &amp; Assurance</small></span></div>
+    <div class="nav-group-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button class="nav-link active" data-view="overview">◫ <span>Overview</span></button>
+      <button class="nav-link" data-view="findings">⌕ <span>Findings</span></button>
+      <button class="nav-link" data-view="assessments">▤ <span>Assessments</span></button>
+      <button class="nav-link" data-view="repositories">⌘ <span>Repositories &amp; Runs</span></button>
+      <div class="nav-group-label">CATALOG</div>
+      <button class="nav-link" data-view="frameworks">▦ <span>Standards</span></button>
+      <button class="nav-link" data-view="integrations">⬡ <span>Integrations</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="local-mark"><span class="pulse"></span> Evidence-first · Local workspace</div>
+      <small>Technical findings ≠ ISO certification</small>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb"><span>Workspace</span><span class="sep">/</span><strong id="current-view">Overview</strong></div>
+      <div class="toolbar">
+        <button class="btn btn-ghost" id="auth-button" title="Configure bearer token">🔑 Access token</button>
+        <button class="btn btn-primary" id="new-project">＋ New project</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-heading">
+        <div><span class="eyebrow">AUDIT CONTROL CENTER</span>
+          <h1 id="page-title">Audit overview</h1>
+          <p id="page-subtitle">Evidence-backed engineering and compliance readiness.</p></div>
+        <div class="heading-actions">
+          <label class="visually-hidden" for="project-select">Project</label>
+          <select id="project-select" aria-label="Select project"><option value="">No projects</option></select>
+          <button class="btn btn-ghost" id="refresh">↻ Refresh</button>
+        </div>
+      </div>
+      <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+      <section id="view-overview" class="view">
+        <div id="kpi-row" class="kpi-grid"></div>
+        <div class="two-column">
+          <div class="panel"><div class="panel-head"><h2>Assessment coverage</h2><span class="muted small">Reviewed controls only</span></div><div id="coverage"></div></div>
+          <div class="panel"><div class="panel-head"><h2>Recent activity</h2></div><div id="activity"></div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>Current project</h2><div class="buttons"><button class="btn btn-sm" id="report-md">↓ Markdown report</button><button class="btn btn-sm" id="report-json">↓ JSON export</button></div></div><div id="project-summary"></div></div>
+      </section>
+      <section id="view-findings" class="view hidden">
+        <div class="panel">
+          <div class="panel-head"><h2>Technical findings</h2><span class="muted small">All scanner findings require review before a confirmed verdict</span></div>
+          <div class="filter-row"><input id="finding-search" type="search" placeholder="Search findings, rule or repository" aria-label="Search findings"><select id="finding-severity" aria-label="Filter severity"><option value="">All severities</option><option>critical</option><option>high</option><option>medium</option><option>low</option><option>informational</option></select></div>
+          <div id="findings-table" class="table-scroll"></div>
+        </div>
+      </section>
+      <section id="view-assessments" class="view hidden">
+        <div class="panel"><div class="panel-head"><div><h2>Standard control assessments</h2><p class="muted small">A control status must be supported by an assessor and evidence.</p></div><button id="new-assessment" class="btn btn-primary btn-sm">＋ Assess control</button></div><div id="assessments-table" class="table-scroll"></div></div>
+      </section>
+      <section id="view-repositories" class="view hidden">
+        <div class="panel"><div class="panel-head"><h2>Repository inventory</h2><button id="new-repository" class="btn btn-primary btn-sm">＋ Add repository</button></div><div id="repositories-table" class="table-scroll"></div></div>
+        <div class="panel"><div class="panel-head"><h2>Imported scanner runs</h2><button id="new-import" class="btn btn-primary btn-sm">＋ Import SARIF / Trivy</button></div><div id="runs-table" class="table-scroll"></div></div>
+      </section>
+      <section id="view-frameworks" class="view hidden"><div class="panel"><div class="panel-head"><h2>Standards &amp; frameworks</h2><span class="muted small">Versioned metadata; not full proprietary standards text</span></div><div id="frameworks-grid" class="catalog-grid"></div></div></section>
+      <section id="view-integrations" class="view hidden"><div class="panel"><div class="panel-head"><h2>Integration adapters</h2><span class="muted small">Listed does not mean installed or operational</span></div><div id="integrations-grid" class="catalog-grid"></div></div></section>
+      <footer>OmniAuditor · Evidence-first audit readiness · No automated certification verdicts</footer>
+    </div>
+  </main>
+</div>
+<dialog id="project-dialog"><form id="project-form" class="dialog-form"><div class="modal-heading"><h2>Create project</h2><button class="icon-button" type="button" data-close>×</button></div><label>Project name <input name="name" required maxlength="200" placeholder="Shahr Man"></label><label>Identifier <input name="id" maxlength="80" pattern="[A-Za-z0-9][A-Za-z0-9._-]*" placeholder="shahr-man"></label><label>Description <textarea name="description" maxlength="1000" rows="3"></textarea></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Create project</button></div></form></dialog>
+<dialog id="repository-dialog"><form id="repository-form" class="dialog-form"><div class="modal-heading"><h2>Add repository</h2><button class="icon-button" type="button" data-close>×</button></div><p class="muted small">Registration only; OmniAuditor will not clone or access the repository.</p><label>Repository ID <input name="id" required maxlength="80" pattern="[A-Za-z0-9][A-Za-z0-9._-]*" placeholder="carpet-core"></label><label>Display name <input name="name" maxlength="120" placeholder="Carpet Core"></label><label>HTTPS URL <input name="url" type="url" required maxlength="600" placeholder="https://github.com/your-org/carpet-core"></label><label>Role <input name="role" maxlength="60" placeholder="backend"></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Add repository</button></div></form></dialog>
+<dialog id="import-dialog"><form id="import-form" class="dialog-form"><div class="modal-heading"><h2>Import scanner report</h2><button class="icon-button" type="button" data-close>×</button></div><p class="muted small">Existing JSON only. No scanners are invoked. Review reports for confidential data before importing.</p><label>Repository <select name="repositoryId" id="import-repo" required></select></label><label>Report format <select name="format"><option value="sarif">SARIF 2.1</option><option value="trivy">Trivy JSON</option></select></label><label>Commit SHA (optional) <input name="revision" maxlength="64" placeholder="abcdef1"></label><label>Report JSON <input id="report-file" name="file" type="file" accept=".json,.sarif" required></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Import report</button></div></form></dialog>
+<dialog id="assessment-dialog"><form id="assessment-form" class="dialog-form"><div class="modal-heading"><h2>Assess standard control</h2><button class="icon-button" type="button" data-close>×</button></div><label>Framework <select name="frameworkId" id="assessment-framework" required></select></label><label>Exact control ID <input name="controlId" maxlength="120" required placeholder="A.8.3"></label><label>Scope <input name="scope" maxlength="250" placeholder="project"></label><label>Assessment status <select name="status" required><option value="not-assessed">Not assessed</option><option value="insufficient-evidence">Insufficient evidence</option><option value="not-applicable">Not applicable</option><option value="conforms">Conforms</option><option value="partially-conforms">Partially conforms</option><option value="nonconforming">Nonconforming</option></select></label><label>Assessor <input name="assessor" maxlength="160" required placeholder="Reviewer name"></label><label>Evidence IDs (comma-separated finding or run IDs) <input name="evidenceIds" placeholder="F-..., run-..."></label><label>Rationale / method <textarea name="rationale" rows="4" maxlength="3000" required placeholder="Explain the test, evidence and scope"></textarea></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Save assessment</button></div></form></dialog>
+<dialog id="review-dialog"><form id="review-form" class="dialog-form"><div class="modal-heading"><h2>Review technical finding</h2><button class="icon-button" type="button" data-close>×</button></div><div id="review-title" class="muted small"></div><input name="findingId" type="hidden"><label>Status <select name="status" required><option value="needs-review">Needs review</option><option value="confirmed">Confirmed</option><option value="false-positive">False positive</option><option value="accepted-risk">Accepted risk</option><option value="resolved">Resolved</option></select></label><label>Reviewer <input name="reviewer" required maxlength="120"></label><label>Decision &amp; justification <textarea name="note" required rows="4" maxlength="2000"></textarea></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Record review</button></div></form></dialog>
+<dialog id="mapping-dialog"><form id="mapping-form" class="dialog-form"><div class="modal-heading"><h2>Map finding to standard</h2><button class="icon-button" type="button" data-close>×</button></div><p class="muted small">A control mapping is an evidence-backed reference, not automatically a formal ISO nonconformity.</p><div id="mapping-title" class="muted small"></div><input name="findingId" type="hidden"><label>Framework <select id="mapping-framework" name="frameworkId" required></select></label><label>Exact control ID <input name="controlId" required maxlength="120" placeholder="A.8.3"></label><label>Review status <select name="mappingStatus"><option value="candidate">Candidate</option><option value="reviewed">Reviewed mapping</option></select></label><label>Reviewer <input name="reviewer" required maxlength="160"></label><label>Why is this control relevant? <textarea name="rationale" rows="4" required maxlength="3000"></textarea></label><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary">Save mapping</button></div></form></dialog>
+</body>
+</html>

@@ -1,49 +1,55 @@
-# Architecture — proposed target and implemented subset
+# OmniAuditor architecture (v0.2)
 
-## Target system
+## Target
 
 ```text
-Projects (many repos, services, environments)
-  -> Scoped audit plans / authorized jobs
-  -> Isolated connectors and runners
-       -> Trivy, Opengrep, external SARIF
-       -> Shannon / Strix (active, opt-in only)
-       -> MRA / OWASP AppSec Agent / SecuritySkills
-       -> documents, people, operations evidence
-  -> Ingestion & normalization
-  -> Evidence provenance / immutable references / deduplication
-  -> Framework / control mapping (versioned and reviewed)
-  -> Human review + AI Chief Auditor (proposals, not verdict authority)
-  -> Findings and assessments
-  -> JSON / Markdown / SARIF / PDF / dashboard / MCP
-  -> Optional DefectDojo, CISO Assistant, Unicis integrations
+Project
+ ├── Repository A ── Tool report ──┐
+ ├── Repository B ── Tool report ──┤
+ └── Business/process evidence ───┘ (future)
+                                   ↓
+                    Ingestion & evidence provenance
+                                   ↓
+                    Normalized technical findings
+                                   ↓
+                 Human review + control relevance map
+                                   ↓
+              Separately reviewed control assessments
+                                   ↓
+            Project JSON / Markdown / Dashboard / MCP
 ```
 
-**Implemented in Phase 0:** local, explicit SARIF/Trivy JSON input -> normalized findings -> JSON/Markdown. No automatic execution or network access.
+The current prototype runs on Node.js 20+ with a dependency-free HTTP server, responsive HTML/CSS/JS dashboard, and an atomic single-process JSON workspace. The CLI supports offline scan file normalization. MCP uses JSON-RPC over stdio and is read-only.
 
-## Repository layout
+This initial architecture intentionally uses no Next.js, NestJS, Prisma, or PostgreSQL dependencies. Migration to a service architecture should only happen when multi-user permissions, concurrent workflows, and larger evidence volumes justify the operational cost.
 
-- `apps/cli/`: offline input import and report output.
-- `contracts/`: normalized findings and audit-run JSON Schemas.
-- `integrations/`: planned adapters and their integration state.
-- `standards/`: names and versions only, not proprietary ISO normative text.
-- `examples/`: fictional synthetic test artifacts.
-- `docs/`: governance, boundaries, architecture and stages.
+## Implemented modules
 
-## Design decisions
+- `apps/web/store.mjs` — persistent single-process JSON workspace (atomic temp-file replace).
+- `apps/web/service.mjs` — application layer: projects, repositories, imports, findings, reviews, mappings, assessments, reports.
+- `apps/web/server.mjs` — local HTTP API and static dashboard, with token required for non-loopback binding.
+- `apps/web/public/` — lightweight dashboard. English only for now.
+- `apps/cli/` — standalone read-only SARIF and Trivy artifact importer.
+- `apps/mcp/` — MCP stdio server exposing read-only project, catalog, and report tools.
+- `contracts/` — CLI import schemas; the HTTP project workspace is independently represented and will need published schemas.
+- `integrations/registry.json` — planned/available import capabilities with explicit statuses.
+- `standards/frameworks.json` — metadata catalog, not the proprietary official text.
 
-1. **Project > repository > environment > run:** repository-specific findings and cross-repository relationships are distinct. An aggregated project verdict cannot be inferred from one scanned repo.
-2. **Tool outputs are evidence sources, not judgments:** preserve tool identifier, source artifact digest, original rule ID, location and revision when known.
-3. **Conservative deduplication:** automatically deduplicate only repeated results sharing the same repository, rule, file, line, and component within a tool/format. Cross-tool correlation requires human or validated logic.
-4. **Versioned control catalog:** mapping needs framework, edition, control ID, mapping rationale, scope, and reviewer verification. The foundation deliberately does not auto-map technical findings to ISO clauses.
-5. **No single pass percentage:** control-level statuses need clear tested scope, sampling, required evidence, reviewer and history. Absence of findings is not evidence of conformity.
-6. **Plugin registry:** integrations declare capabilities, data formats, license and operational safety. Being listed in the registry is *not* being installed or operational.
-7. **Security:** minimize scanner privilege, do not execute code from incoming artifacts, redact sensitive values, segregate tenants/projects, and avoid external uploads unless authorized.
+## Correctness boundaries
 
-## Suggested future stack
+1. Project is a logical grouping, while each finding points to one repository and source artifact.
+2. Reporter imports are **unverified findings**. Import alone never grants control conformity.
+3. SHA-256 hashes identify imported evidence. Original raw scanner reports are deliberately not persisted by the dashboard.
+4. Fingerprints deduplicate exact within-tool matches only; cross-tool equivalence is not assumed.
+5. Control mappings carry framework version, control ID, rationale and reviewer, and are not themselves formal nonconformities.
+6. Control assessments require explicit assessor, scope, rationale and linked evidence for conforms/partially-conforms/nonconforming.
+7. Missing data is never a pass. This platform does not issue certificates.
+8. The application is local-first and single-process. PostgreSQL, RBAC, isolated scanner workers, and multi-tenant architecture are future work.
 
-TypeScript core and isolated runners; NestJS API, PostgreSQL for metadata, object storage for evidence, Next.js/shadcn/ui for RTL-capable interface. Current Phase 0 intentionally uses dependency-free Node.js ESM so the data model is developed before services are provisioned.
+## External adapter principles
 
-## Explicitly out of scope in Phase 0
+MRA Auditor, SecuritySkills, OWASP AppSec Agent, Trivy, Opengrep, Shannon, Strix, CISO Assistant, Unicis, and DefectDojo are separate external projects. Never vendor third-party sources or assume their licenses permit embedding. Do not mark planned integrations operational. Active testing requires specifically authorized scope, target and time window.
 
-Repository cloning and credential handling; actual scans; dynamic testing; LLM analysis; standards verdict engine; ISO SoA and risk workshops; audit management; web dashboard; PDF generation; MCP/API servers; scheduling; persistence beyond the generated files.
+## Security restrictions
+
+The dashboard only imports existing reports; the repository URL is stored as metadata and is never fetched. Remote listener requires a strong bearer token, but production SSO, fine-grained authorization, backups, data retention and external scanner sandboxes have not yet been built. See [SECURITY](SECURITY.md).

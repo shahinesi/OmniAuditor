@@ -1,15 +1,37 @@
-# Security and execution boundaries
+# Security policy & limits (local MVP)
 
-This repository is a foundation, **not a production-ready security service**.
+**Do not deploy this release as an internet-facing multi-tenant SaaS or store high-sensitivity production evidence without additional controls.**
 
-- **Default read-only:** import only existing local JSON artifacts explicitly identified by the operator. The importer does not clone repositories, execute shells, call LLMs, or scan hosts.
-- **Never trust audit input:** scanner output, repo README, code comments and logs may contain prompt injection or misleading evidence. They are data, not instructions to the Chief Auditor.
-- **Secret minimization:** Trivy secret `Match`, `Code`, raw snippet fields and token-like values are not purposefully copied; arbitrary tool titles/descriptions may still contain sensitive text. Do not feed untrusted production reports to a public dashboard without classification and redaction.
-- **Future job model:** explicit allow-list of repository IDs/refs, least-privilege read credentials, isolated ephemeral runner, no default network egress, resource/time limits and per-run audit log.
-- **Active testing:** Shannon and Strix must remain disabled until a named owner authorizes scope, targets, allowed actions, window and environment. Prefer dedicated staging targets and synthetic data.
-- **Evidence provenance:** persist immutable original artifact pointers plus SHA-256, scanner versions, commit SHA, environment and collection time where available. Do not fabricate unavailable metadata.
-- **Cross-org privacy:** one organization's evidence must not be visible to another. Connection to external GRC services must be opt-in and explicit.
-- **AI safety:** AI-generated remediation is advisory, not direct code execution; no auto-fix, commits, issue creation or credential use without separate approval.
-- **Compliance honesty:** automated tool results never issue ISO certificates. Support internal audit, gap assessment and evidence gathering only.
+## What is implemented
 
-Please report security vulnerabilities privately to the maintainer; do not add real secrets or exploitation details to public issues.
+- Local-only HTTP bind by default (`127.0.0.1`); non-loopback bind requires a 24+ character bearer token.
+- Token comparison via constant-time byte comparison.
+- Deny cross-origin state-changing requests with an Origin check; JSON Content-Type required.
+- Limited request payloads and bounded imported finding count.
+- Metadata persistence as an atomic, owner-readable JSON file.
+- Repository links registered as metadata only; no clone, fetch, code execution, auto-fix or automated scan.
+- Read-only MCP tools, no remote write/scan tools.
+- SHA-256 digests for supplied scanner JSON artifacts and provenance.
+- Best-effort token masking and intentional omission of Trivy Secret Match/Code values.
+- Explicit scope, reviewer and evidence required for reviewed control verdicts.
+- No injected external scripts/styles; local static frontend and Content Security Policy.
+
+## Known limitations
+
+- Single-process JSON store; not safe for multiple app processes sharing one data file.
+- Bearer token is single-operator protection, not RBAC, organizational identity or tenant isolation.
+- Reviewer names are user-entered and are not cryptographically authenticated.
+- Raw imported scanner values may contain sensitive descriptions despite best-effort masking; do not publish exports blindly.
+- No audit evidence signature, immutable object store, comprehensive redaction, security scanner sandbox, policy approval workflow, independent validation of standard clause IDs or full regulatory controls.
+- Tokens alone do not replace HTTPS, proper network segmentation and authentication hardening for remote environments.
+- API endpoints have not been independently penetration tested.
+- Active pentest integrations are not installed or enabled.
+- A reviewed finding-to-control link is never sufficient to prove an accredited ISO assessment outcome.
+
+## Future hardened deployment
+
+Implement RBAC/SSO, explicit organization boundaries, hardened worker isolation, scalable persistence, artifact encryption at rest, secret management, read and write audit trails, immutable evidence retention, workflow approvals, abuse protection, and continuous independent security testing.
+
+## Reporting a vulnerability
+
+Please privately contact the maintainer rather than posting secrets or reproduction material into public GitHub issues.

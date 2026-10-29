@@ -1,24 +1,45 @@
-# Roadmap
+# OmniAuditor product roadmap
 
-Delivery is gated by evidence, security and reproducibility rather than claims of "one-click certification."
+OmniAuditor's target is **continuous, evidence-first audit readiness** across technical and organizational controls. Accredited certification remains outside the platform's authority.
 
-| Stage | Deliverables | Exit gate |
+## Actual implementation status
+
+| Capability | Status | Details |
 | --- | --- | --- |
-| 0 — Offline foundation | Model, schemas, tool registry, SARIF/Trivy import, Markdown/JSON | Safe imports; outputs distinguish reported findings from audited controls |
-| 1 — Project workspace | Projects, many repositories, revision identity, run history, scoped permissions, persistent evidence | Every finding traceable to project/repository/run/commit |
-| 2 — Technical adapters | Trivy, Opengrep, MRA, SecuritySkills, OWASP AppSec Agent; optional staging-only Shannon/Strix | Exact version capture; sandbox & opt-in for active tools |
-| 3 — Standards & governance | Control-level assessment, ISO/OWASP/NIST catalog, evidence requests, reviewer signoff, GRC exports | No certification or false-positive mapping claims |
-| 4 — AI Chief Auditor | Proposed analysis, remediation, counter-evidence, reviewer workflow | AI claims backed by source evidence and revision |
-| 5 — UX/MCP/automation | Dashboard, MCP + CLI, PDF, scheduling, comparisons, optional GRC sync | RBAC, tenant isolation, audit log, safe defaults |
+| Project registry / multiple repositories | Implemented (local MVP) | HTTPS references, no cloning |
+| SARIF 2.1 + Trivy JSON ingestion | Implemented | Manual import, source digests |
+| Finding review and conservatively deduplicated evidence | Implemented | Review rationale and actor |
+| Standards/framework metadata catalog | Implemented | Not a normative text database |
+| Manual standard control assessment | Implemented | Evidence references and assessor |
+| Manual finding-to-control mapping | Implemented | Candidate/reviewed, no automatic nonconformity |
+| Project JSON and Markdown reporting | Implemented | Not certification |
+| Local dashboard | Implemented | Single-operator, English-only initial UI |
+| Read-only MCP stdio server | Implemented | No writing or scanner execution |
+| CLI offline report importer | Implemented | Separate from dashboard persistence |
+| Trivy binary execution | Not implemented | Manual Trivy JSON import only |
+| Opengrep binary execution | Not implemented | SARIF import only |
+| MRA, SecuritySkills, OWASP AppSec Agent | Not implemented | Integration contracts planned |
+| Shannon / Strix dynamic testing | Not implemented | Require scoped authorization |
+| CISO Assistant / Unicis / DefectDojo sync | Not implemented | Optional APIs subject to availability |
+| AI Chief Auditor autonomous orchestration | Not implemented | Needs bounded agents and verifier |
+| Fully populated ISO clause catalog & SoA | Not implemented | Requires licensed standard text and assessment method |
+| Organizational identity/RBAC and PostgreSQL | Not implemented | Do not expose as multi-tenant SaaS |
+| Formal audit evidence signoff & certificates | Not implemented | Human/authority dependent |
+| Bilingual English/Persian UI and documentation | Planned | After initial functionality stabilizes |
 
-## Integrations
+## Next engineering phases
 
-The intended ecosystem includes all previously discussed tools: MRA Auditor, SecuritySkills, OWASP AppSec Agent, Trivy, Opengrep, Shannon, Strix, CISO Assistant, Unicis, and DefectDojo. These have distinct roles and incompatible licenses/terms or deployment costs. Do **not** vendor their code automatically, assume a free integration API/MCP tier, or claim they are operational.
+1. **Verified data core:** PostgreSQL migration path, immutable evidence references, scoped access control, audit trail, artifact retention, snapshots, input redaction.
+2. **Tool execution:** version-pinned and sandboxed adapters for Trivy/Opengrep, then other tools with explicit contracts and manual authorization for active testing.
+3. **Assurance model:** comprehensive controls, applicability rules, evidence requirements, source-level citations, reviewer signoff, and conflict-resolution process.
+4. **Chief Auditor:** bounded AI-assisted recommendation and standards mapping, source citation, deterministic validators, red-team testing of prompt injection.
+5. **Ecosystem:** optional DefectDojo / CISO Assistant / Unicis adapters, reporting & notification flows.
+6. **Production hardening:** RBAC, tenancy, rate limiting, backups, threat model, observability, CI and repeatable integration testing.
+7. **Localization:** final English/Persian readmes, documents and RTL UI.
 
-## Acceptance criteria for compliance
+## Rules
 
-For each control: standard + version + identifier, applicability rationale, explicit testing method, evidence references, assessor, review date, and one of `conforms`, `partially-conforms`, `nonconforming`, `insufficient-evidence`, `not-assessed`, `not-applicable`. A pass never follows solely from zero scanner findings.
-
-## Operational note
-
-Never auto-run tests, builds, migrations, deployments, scans against live services, or modifications to audited repositories. Approval must be scoped per action.
+- Always distinguish **planned**, **prototype**, **implemented**, **verified** and **certified**.
+- Do not treat scanner silence as control conformity.
+- Never claim a proprietary standard's official requirements were checked without correctly scoped evidence and authorized standard access.
+- Do not auto-run builds, tests, migrations, deployments, penetration tests or changes to audited repositories.

@@ -1,14 +1,17 @@
 {
   "name": "omni-auditor",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Evidence-first multi-project auditing foundation",
+  "description": "Evidence-first multi-project software auditing and compliance readiness",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
+    "start": "node apps/web/server.mjs",
+    "dev": "node --watch apps/web/server.mjs",
+    "mcp": "node apps/mcp/server.mjs",
     "audit:ingest": "node apps/cli/index.mjs ingest",
-    "test": "node --test apps/cli/test/*.test.mjs"
+    "test": "node --test apps/cli/test/*.test.mjs apps/web/test/*.test.mjs"
   }
 }

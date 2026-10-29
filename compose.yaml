@@ -1,0 +1,24 @@
+services:
+  omniauditor:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    environment:
+      OMNIAUDITOR_HOST: "0.0.0.0"
+      OMNIAUDITOR_PORT: "4318"
+      OMNIAUDITOR_TOKEN: "${OMNIAUDITOR_TOKEN:?Set OMNIAUDITOR_TOKEN (at least 24 characters)}"
+      OMNIAUDITOR_DATA_DIR: "/app/data"
+    volumes:
+      - audit_data:/app/data
+    ports:
+      - "127.0.0.1:4318:4318"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m
+volumes:
+  audit_data:
