@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shahinesi/OmniAuditor/blob/main/contracts/audit-run.schema.json",
+  "title": "OmniAuditor imported run 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "projectId",
+    "repositoryId",
+    "revision",
+    "generatedAt",
+    "kind",
+    "status",
+    "coverageStatus",
+    "standardsAssessmentStatus",
+    "inputs",
+    "findings",
+    "controlAssessments"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1.0"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^RUN-[a-f0-9]{16}$"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "repositoryId": {
+      "type": "string"
+    },
+    "revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kind": {
+      "const": "imported-technical-findings"
+    },
+    "status": {
+      "const": "unreviewed"
+    },
+    "coverageStatus": {
+      "const": "unknown"
+    },
+    "standardsAssessmentStatus": {
+      "const": "not-assessed"
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "format",
+          "sha256",
+          "byteLength",
+          "importedItems"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "sarif",
+              "trivy"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "byteLength": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "importedItems": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "./finding.schema.json"
+      }
+    },
+    "controlAssessments": {
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

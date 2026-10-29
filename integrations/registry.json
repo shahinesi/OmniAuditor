@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "0.1.0",
+  "notice": "Declared integrations are not installed or operational. SARIF and Trivy JSON are file-import formats only in Phase 0.",
+  "integrations": [
+    {
+      "id": "mra-auditor",
+      "name": "MRA Auditor",
+      "role": "audit-methodology",
+      "repository": "https://github.com/marcelrapold/mra-auditor",
+      "status": "planned",
+      "execution": "agent-controlled"
+    },
+    {
+      "id": "security-skills",
+      "name": "SecuritySkills",
+      "role": "skills",
+      "repository": "https://github.com/UnitOneAI/SecuritySkills",
+      "status": "planned",
+      "execution": "agent-controlled"
+    },
+    {
+      "id": "owasp-appsec-agent",
+      "name": "OWASP AppSec Agent",
+      "role": "code-review-agent",
+      "repository": "https://github.com/OWASP/appsec-agent",
+      "status": "planned",
+      "execution": "agent-controlled"
+    },
+    {
+      "id": "trivy",
+      "name": "Trivy",
+      "role": "scanner",
+      "repository": "https://github.com/aquasecurity/trivy",
+      "status": "file-import-only",
+      "formats": [
+        "trivy-json",
+        "sarif"
+      ],
+      "execution": "manual-artifact-input"
+    },
+    {
+      "id": "opengrep",
+      "name": "Opengrep",
+      "role": "sast",
+      "repository": "https://github.com/opengrep/opengrep",
+      "status": "generic-sarif-import-only",
+      "execution": "manual-artifact-input"
+    },
+    {
+      "id": "shannon",
+      "name": "Shannon",
+      "role": "active-pentest",
+      "repository": "https://github.com/KeygraphHQ/shannon",
+      "status": "planned",
+      "execution": "explicit-authorization-only"
+    },
+    {
+      "id": "strix",
+      "name": "Strix",
+      "role": "active-pentest",
+      "repository": "https://github.com/usestrix/strix",
+      "status": "planned",
+      "execution": "explicit-authorization-only"
+    },
+    {
+      "id": "ciso-assistant",
+      "name": "CISO Assistant",
+      "role": "grc",
+      "repository": "https://github.com/intuitem/ciso-assistant-community",
+      "status": "optional-planned",
+      "execution": "external-integration"
+    },
+    {
+      "id": "unicis",
+      "name": "Unicis Platform",
+      "role": "grc",
+      "repository": "https://github.com/UnicisTech/unicis-platform-ce",
+      "status": "optional-planned",
+      "execution": "external-integration",
+      "note": "Verify edition/license/API/MCP availability before integration."
+    },
+    {
+      "id": "defectdojo",
+      "name": "DefectDojo",
+      "role": "vulnerability-management",
+      "repository": "https://github.com/DefectDojo/django-DefectDojo",
+      "status": "optional-planned",
+      "execution": "external-integration"
+    }
+  ]
+}

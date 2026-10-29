@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "0.1.0",
+  "notice": "Metadata only; not full standards text, certification, or evidence of conformance. Confirm publication/edition and applicable national amendments with authoritative publishers before formal audits.",
+  "frameworks": [
+    {
+      "id": "iso-27001",
+      "name": "ISO/IEC 27001",
+      "edition": "2022",
+      "amendments": [
+        "2024"
+      ],
+      "domain": "information-security-management"
+    },
+    {
+      "id": "iso-9001",
+      "name": "ISO 9001",
+      "edition": "2026",
+      "domain": "quality-management"
+    },
+    {
+      "id": "iso-25010",
+      "name": "ISO/IEC 25010",
+      "edition": "2023",
+      "domain": "product-quality-model"
+    },
+    {
+      "id": "iso-12207",
+      "name": "ISO/IEC/IEEE 12207",
+      "edition": "2026",
+      "domain": "software-life-cycle"
+    },
+    {
+      "id": "iso-20000-1",
+      "name": "ISO/IEC 20000-1",
+      "edition": "2018",
+      "domain": "it-service-management"
+    },
+    {
+      "id": "iso-22301",
+      "name": "ISO 22301",
+      "edition": "2019",
+      "domain": "business-continuity"
+    },
+    {
+      "id": "iso-27701",
+      "name": "ISO/IEC 27701",
+      "edition": "2025",
+      "domain": "privacy-management"
+    },
+    {
+      "id": "iso-42001",
+      "name": "ISO/IEC 42001",
+      "edition": "2023",
+      "domain": "ai-management"
+    },
+    {
+      "id": "owasp-asvs",
+      "name": "OWASP ASVS",
+      "edition": "5.0.0",
+      "domain": "application-security-verification"
+    },
+    {
+      "id": "owasp-web-top10",
+      "name": "OWASP Top 10",
+      "edition": "2025",
+      "domain": "web-risk-awareness"
+    },
+    {
+      "id": "owasp-api-top10",
+      "name": "OWASP API Security Top 10",
+      "edition": "2023",
+      "domain": "api-risk-awareness"
+    },
+    {
+      "id": "nist-ssdf",
+      "name": "NIST SP 800-218",
+      "edition": "1.1",
+      "domain": "secure-software-development"
+    }
+  ],
+  "controlMappings": []
+}

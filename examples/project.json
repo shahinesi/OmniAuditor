@@ -1,0 +1,19 @@
+{
+  "id": "shahr-man",
+  "name": "Shahr Man",
+  "repositories": [
+    {
+      "id": "carpet-app",
+      "url": "https://github.com/example/carpet-app",
+      "role": "web",
+      "revision": null
+    },
+    {
+      "id": "carpet-core",
+      "url": "https://github.com/example/carpet-core",
+      "role": "api",
+      "revision": null
+    }
+  ],
+  "notes": "Fictional configuration example. URLs are placeholders and never fetched."
+}
